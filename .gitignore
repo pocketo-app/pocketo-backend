@@ -1,3 +1,7 @@
+### Custom ###
+private/
+
+### Project ###
 HELP.md
 .gradle
 build/

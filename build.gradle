@@ -6,6 +6,7 @@ plugins {
 
 group = 'dev.pocketo'
 version = '0.0.1-SNAPSHOT'
+description = 'Pocketo API backend'
 sourceCompatibility = '17'
 
 configurations {
