@@ -18,6 +18,7 @@ services:
     pull_policy: never
     ports:
       - "${HOST_PORT:?}:${SERVER_PORT:?}"
+      - '5005:5005'
   db:
     image: 'postgres:15-alpine'
     container_name: pocketo-db
