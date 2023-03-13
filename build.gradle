@@ -52,7 +52,7 @@ tasks.register('dockerImageBuild', Exec) {
 	group = 'application'
 	description = 'Build Docker image'
 	commandLine = [
-	        'docker',
+			'docker',
 			'image',
 			'build',
 			'-t',
