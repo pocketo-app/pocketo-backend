@@ -39,3 +39,34 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+bootJar {
+	layered {
+		enabled = true // Default is true
+	}
+}
+
+tasks.register('dockerImageBuild', Exec) {
+	def imageName = "tonghoangvu/${project.name}:${project.version}"
+	def jarFile = bootJar.archiveFileName.get()
+	group = 'application'
+	description = 'Build Docker image'
+	commandLine = [
+	        'docker',
+			'image',
+			'build',
+			'-t',
+			imageName,
+			'--build-arg',
+			"JAR_FILE=${jarFile}",
+			'.'
+	]
+	dependsOn = ['bootJar']
+}
+
+tasks.register('dockerImagePush', Exec) {
+	def imageName = "tonghoangvu/${project.name}:${project.version}"
+	group = 'application'
+	description = 'Push Docker image'
+	commandLine = ['docker', 'image', 'push', imageName]
+}
