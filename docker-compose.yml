@@ -1,0 +1,35 @@
+# Don't store sensitive data in this file
+# Use .env.* files instead, which are ignored by Git
+version: '3.9'
+services:
+  app:
+    image: ${APP_IMAGE:?}
+    container_name: pocketo-app
+    volumes:
+      - './pocketo-data/app/logs:/workspace/logs/'
+    env_file:
+      - '.env.app'
+    environment:
+      - RUN_VIA_DOCKER_COMPOSE=1
+      - SERVER_PORT=${SERVER_PORT:?} # Pass SERVER_PORT from .env to container
+    depends_on:
+      - db
+      - cache
+    pull_policy: never
+    ports:
+      - "${HOST_PORT:?}:${SERVER_PORT:?}"
+      - '5005:5005'
+  db:
+    image: 'postgres:15-alpine'
+    container_name: pocketo-db
+    volumes:
+      - './pocketo-data/db:/var/lib/postgresql/data/'
+    env_file:
+      - '.env.db'
+  cache:
+    image: 'redis:7-alpine'
+    container_name: pocketo-cache
+    volumes:
+      - './pocketo-data/cache:/data/'
+    env_file:
+      - '.env.cache'

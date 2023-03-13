@@ -1,0 +1,10 @@
+# Don't store sensitive data in this file
+# Use .env.* files instead, which are ignored by Git
+services:
+  app:
+    restart: unless-stopped
+    pull_policy: missing # Unique tags
+  db:
+    restart: unless-stopped
+  cache:
+    restart: unless-stopped

@@ -1,4 +1,8 @@
 ### Custom ###
+.env
+*.env.*
+!.env.example
+pocketo-data/
 private/
 
 ### Project ###
