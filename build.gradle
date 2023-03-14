@@ -88,3 +88,21 @@ tasks.register('dockerComposeLogs', Exec) {
 	description = 'View Docker Compose logs'
 	commandLine = ['docker', 'compose', 'logs', '-f']
 }
+
+// https://fabianlee.org/2022/11/20/gradle-running-more-than-one-command-in-an-exec-task/
+tasks.register('dockerComposeRestartApp', Exec) {
+	def serviceName = 'app'
+	group = 'application'
+	description = 'Reload app container in Docker Compose'
+	doFirst {
+		exec {
+			commandLine = ['docker', 'compose', 'stop', serviceName]
+		}
+	}
+	commandLine = ['docker', 'compose', 'pull', serviceName]
+	doLast {
+		exec {
+			commandLine = ['docker', 'compose', 'up', '-d', '--no-deps', serviceName]
+		}
+	}
+}
