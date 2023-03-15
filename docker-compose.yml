@@ -1,10 +1,12 @@
-# Don't store sensitive data in this file
-# Use .env.* files instead, which are ignored by Git
+# Don't store sensitive data in this file, use .env.* files instead (ignored by Git)
+# Below options are for production environment by default
+# Use docker-compose.override.yml (ignored by Git) to override these options on dev environment
 version: '3.9'
 services:
   app:
     image: ${APP_IMAGE:?}
     container_name: pocketo-app
+    restart: unless-stopped
     volumes:
       - './pocketo-data/app/logs:/workspace/logs/'
     env_file:
@@ -15,13 +17,14 @@ services:
     depends_on:
       - db
       - cache
-    pull_policy: never
+    pull_policy: missing # Never have different images with the same tag
     ports:
       - "${HOST_PORT:?}:${SERVER_PORT:?}"
       - '5005:5005'
   db:
     image: 'postgres:15-alpine'
     container_name: pocketo-db
+    restart: unless-stopped
     volumes:
       - './pocketo-data/db:/var/lib/postgresql/data/'
     env_file:
@@ -29,6 +32,7 @@ services:
   cache:
     image: 'redis:7-alpine'
     container_name: pocketo-cache
+    restart: unless-stopped
     volumes:
       - './pocketo-data/cache:/data/'
     env_file:

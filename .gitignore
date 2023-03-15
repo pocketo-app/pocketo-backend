@@ -1,4 +1,5 @@
 ### Custom ###
+docker-compose.override.yml
 pocketo-config/
 pocketo-data/
 private/
