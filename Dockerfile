@@ -1,5 +1,7 @@
 # syntax=docker/dockerfile:1
 # https://github.com/jonashackt/spring-boot-buildpack#using-layered-jars-inside-dockerfiles
+LABEL author.name="Vu Tong"
+LABEL author.email="tonghoangvu@outlook.com"
 
 # Don't build from source code, just copy pre-built JAR
 FROM openjdk:17-alpine AS builder
