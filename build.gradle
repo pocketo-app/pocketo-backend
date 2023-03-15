@@ -74,19 +74,19 @@ tasks.register('dockerImagePush', Exec) {
 tasks.register('dockerComposeUp', Exec) {
 	group = 'application'
 	description = 'Run Docker Compose up'
-	commandLine = ['docker', 'compose', 'up', '-d']
+	commandLine = ['docker', 'compose',  '--env-file', './pocketo-config/.env', 'up', '-d']
 }
 
 tasks.register('dockerComposeDown', Exec) {
 	group = 'application'
 	description = 'Run Docker Compose down'
-	commandLine = ['docker', 'compose', 'down']
+	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'down']
 }
 
 tasks.register('dockerComposeLogs', Exec) {
 	group = 'application'
 	description = 'View Docker Compose logs'
-	commandLine = ['docker', 'compose', 'logs', '-f']
+	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'logs', '-f']
 }
 
 // https://fabianlee.org/2022/11/20/gradle-running-more-than-one-command-in-an-exec-task/
@@ -96,13 +96,13 @@ tasks.register('dockerComposeRestartApp', Exec) {
 	description = 'Reload app container in Docker Compose'
 	doFirst {
 		exec {
-			commandLine = ['docker', 'compose', 'stop', serviceName]
+			commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'stop', serviceName]
 		}
 	}
-	commandLine = ['docker', 'compose', 'pull', serviceName]
+	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'pull', serviceName]
 	doLast {
 		exec {
-			commandLine = ['docker', 'compose', 'up', '-d', '--no-deps', serviceName]
+			commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'up', '-d', '--no-deps', serviceName]
 		}
 	}
 }

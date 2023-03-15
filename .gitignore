@@ -1,7 +1,5 @@
 ### Custom ###
-.env
-*.env.*
-!.env.example
+pocketo-config/
 pocketo-data/
 private/
 
