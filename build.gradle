@@ -49,9 +49,9 @@ bootJar {
 		if (gradle.taskGraph.hasTask(':dockerImageBuildIfChanged')) {
 			println('Something changed, rebuild the Docker image')
 			exec {
-				environment('DOCKER_BUILDKIT', 1)
 				def imageName = "tonghoangvu/${project.name}:${project.version}"
 				def jarFile = archiveFileName.get()
+				environment('DOCKER_BUILDKIT', 1)
 				commandLine = [
 						'docker',
 						'image',
@@ -75,11 +75,12 @@ tasks.register('dockerImageBuildIfChanged') {
 }
 
 tasks.register('dockerImageBuild', Exec) {
-	environment('DOCKER_BUILDKIT', 1)
-	def imageName = "tonghoangvu/${project.name}:${project.version}"
-	def jarFile = bootJar.archiveFileName.get()
 	group = 'application'
 	description = 'Build Docker image'
+	dependsOn = ['bootJar']
+	def imageName = "tonghoangvu/${project.name}:${project.version}"
+	def jarFile = bootJar.archiveFileName.get()
+	environment('DOCKER_BUILDKIT', 1)
 	commandLine = [
 			'docker',
 			'image',
@@ -90,13 +91,12 @@ tasks.register('dockerImageBuild', Exec) {
 			"JAR_FILE=${jarFile}",
 			'.'
 	]
-	dependsOn = ['bootJar']
 }
 
 tasks.register('dockerImagePush', Exec) {
-	def imageName = "tonghoangvu/${project.name}:${project.version}"
 	group = 'application'
 	description = 'Push Docker image'
+	def imageName = "tonghoangvu/${project.name}:${project.version}"
 	commandLine = ['docker', 'image', 'push', imageName]
 }
 
@@ -120,9 +120,9 @@ tasks.register('dockerComposeLogs', Exec) {
 
 // https://fabianlee.org/2022/11/20/gradle-running-more-than-one-command-in-an-exec-task/
 tasks.register('dockerComposeRestartApp', Exec) {
-	def serviceName = 'app'
 	group = 'application'
 	description = 'Reload app container in Docker Compose'
+	def serviceName = 'app'
 	doFirst {
 		exec {
 			commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'stop', serviceName]
