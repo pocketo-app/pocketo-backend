@@ -40,6 +40,18 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+tasks.withType(Test).configureEach {
+	maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+	forkEvery = 100
+	reports.html.required = false
+	reports.junitXml.required = false
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.fork = true
+	options.incremental = true
+}
+
 bootJar {
 	layered {
 		enabled = true // Default is true
