@@ -1,7 +1,6 @@
 ### Custom ###
-.env
-*.env.*
-!.env.example
+docker-compose.override.yml
+pocketo-config/
 pocketo-data/
 private/
 

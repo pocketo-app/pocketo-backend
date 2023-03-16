@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # https://github.com/jonashackt/spring-boot-buildpack#using-layered-jars-inside-dockerfiles
 
-# Don't build from source code, just copy pre-built JAR
+# FROM must be the first statement
 FROM openjdk:17-alpine AS builder
 WORKDIR /workspace/
 ARG JAR_FILE
@@ -15,3 +15,6 @@ COPY --from=builder /workspace/spring-boot-loader/ ./
 COPY --from=builder /workspace/snapshot-dependencies/ ./
 COPY --from=builder /workspace/application/ ./
 ENTRYPOINT ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "org.springframework.boot.loader.JarLauncher"]
+
+LABEL author.name="Vu Tong"
+LABEL author.email="tonghoangvu@outlook.com"

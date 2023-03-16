@@ -44,9 +44,38 @@ bootJar {
 	layered {
 		enabled = true // Default is true
 	}
+	doLast {
+		// Only run if bootJar is not up-to-date
+		if (gradle.taskGraph.hasTask(':dockerImageBuildIfChanged')) {
+			println('Something changed, rebuild the Docker image')
+			exec {
+				environment('DOCKER_BUILDKIT', 1)
+				def imageName = "tonghoangvu/${project.name}:${project.version}"
+				def jarFile = archiveFileName.get()
+				commandLine = [
+						'docker',
+						'image',
+						'build',
+						'-t',
+						imageName,
+						'--build-arg',
+						"JAR_FILE=${jarFile}",
+						'.'
+				]
+			}
+		}
+	}
+}
+
+tasks.register('dockerImageBuildIfChanged') {
+	// This task is just a signal to trigger Docker image build in bootJar
+	group = 'application'
+	description = 'Build Docker image if code is changed'
+	dependsOn = ['bootJar']
 }
 
 tasks.register('dockerImageBuild', Exec) {
+	environment('DOCKER_BUILDKIT', 1)
 	def imageName = "tonghoangvu/${project.name}:${project.version}"
 	def jarFile = bootJar.archiveFileName.get()
 	group = 'application'
@@ -74,17 +103,35 @@ tasks.register('dockerImagePush', Exec) {
 tasks.register('dockerComposeUp', Exec) {
 	group = 'application'
 	description = 'Run Docker Compose up'
-	commandLine = ['docker', 'compose', 'up', '-d']
+	commandLine = ['docker', 'compose',  '--env-file', './pocketo-config/.env', 'up', '-d']
 }
 
 tasks.register('dockerComposeDown', Exec) {
 	group = 'application'
 	description = 'Run Docker Compose down'
-	commandLine = ['docker', 'compose', 'down']
+	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'down']
 }
 
 tasks.register('dockerComposeLogs', Exec) {
 	group = 'application'
 	description = 'View Docker Compose logs'
-	commandLine = ['docker', 'compose', 'logs', '-f']
+	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'logs', '-f']
+}
+
+// https://fabianlee.org/2022/11/20/gradle-running-more-than-one-command-in-an-exec-task/
+tasks.register('dockerComposeRestartApp', Exec) {
+	def serviceName = 'app'
+	group = 'application'
+	description = 'Reload app container in Docker Compose'
+	doFirst {
+		exec {
+			commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'stop', serviceName]
+		}
+	}
+	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'pull', serviceName]
+	doLast {
+		exec {
+			commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'up', '-d', '--no-deps', serviceName]
+		}
+	}
 }
