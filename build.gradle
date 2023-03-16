@@ -103,7 +103,7 @@ tasks.register('dockerImagePush', Exec) {
 tasks.register('dockerComposeUp', Exec) {
 	group = 'application'
 	description = 'Run Docker Compose up'
-	commandLine = ['docker', 'compose',  '--env-file', './pocketo-config/.env', 'up', '-d']
+	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'up', '-d']
 }
 
 tasks.register('dockerComposeDown', Exec) {
@@ -131,7 +131,16 @@ tasks.register('dockerComposeRestartApp', Exec) {
 	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'pull', serviceName]
 	doLast {
 		exec {
-			commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'up', '-d', '--no-deps', serviceName]
+			commandLine = [
+					'docker',
+					'compose',
+					'--env-file',
+					'./pocketo-config/.env',
+					'up',
+					'-d',
+					'--no-deps',
+					serviceName
+			]
 		}
 	}
 }
