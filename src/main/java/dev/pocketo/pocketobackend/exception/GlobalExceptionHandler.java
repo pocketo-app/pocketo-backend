@@ -10,6 +10,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import dev.pocketo.pocketobackend.util.CodeUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,6 +44,11 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler({ AccessDeniedException.class })
 	public ResponseEntity<AppError> handleAccessDeniedException() {
 		return new AppError(ErrorCode.ACCESS_DENIED).toResponseEntity();
+	}
+
+	@ExceptionHandler({ NoHandlerFoundException.class })
+	public ResponseEntity<AppError> handleNoHandlerFoundException() {
+		return new AppError(ErrorCode.URL_NOT_FOUND).toResponseEntity();
 	}
 
 	@ExceptionHandler({ NestedCheckedException.class, NestedRuntimeException.class, ServletException.class })
