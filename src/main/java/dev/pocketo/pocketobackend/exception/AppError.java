@@ -7,6 +7,7 @@ import java.util.Set;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +31,9 @@ public class AppError {
 
 	private String path; // Only set when response
 
+	@JsonIgnore
+	private AppException exception; // Cache linked exception
+
 	public AppError(ErrorCode code) {
 		this(code, code.getDescription(), code.getIsUnwanted(), code.getStatus());
 		actions.addAll(code.getActions());
@@ -43,6 +47,13 @@ public class AppError {
 	public ResponseEntity<AppError> toResponseEntity(HttpServletRequest request) {
 		path = request.getRequestURI();
 		return ResponseEntity.status(status).contentType(MediaType.APPLICATION_JSON).body(this);
+	}
+
+	public AppException toException() {
+		if (exception == null) {
+			exception = new AppException(this);
+		}
+		return exception;
 	}
 
 }
