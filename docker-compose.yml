@@ -18,9 +18,6 @@ services:
       - db
       - cache
     pull_policy: missing # Never have different images with the same tag
-    ports:
-      - "${HOST_PORT:?}:${SERVER_PORT:?}"
-      - '5005:5005'
   db:
     image: 'postgres:15-alpine'
     container_name: pocketo-db
