@@ -17,7 +17,7 @@ services:
     depends_on:
       - db
       - cache
-    pull_policy: missing # Never have different images with the same tag
+    pull_policy: always # Can have different images with the same tag
   app-green:
     extends:
       service: app-blue
