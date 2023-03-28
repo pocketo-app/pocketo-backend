@@ -134,7 +134,7 @@ tasks.register('dockerComposeLogs', Exec) {
 tasks.register('dockerComposeRestartApp', Exec) {
 	group = 'application'
 	description = 'Reload app container in Docker Compose'
-	def serviceName = 'app'
+	def serviceName = 'app-blue'
 	doFirst {
 		exec {
 			commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'stop', serviceName]

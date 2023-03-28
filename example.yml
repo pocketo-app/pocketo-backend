@@ -10,7 +10,8 @@ services:
     # Exposing ports to host must not be duplicated, unless the containers won't start
     ports:
       # Expose ports for app containers (each instance has different exposing port)
-      - '${HOST_PORT:?}:${SERVER_PORT:?}'
+      - '${BLUE_HOST_PORT:?}:${SERVER_PORT:?}'
+      - '${GREEN_HOST_PORT:?}:${SERVER_PORT:?}'
       # Expose port 5005 for app container debugging in development (just one instance)
       - '5005:5005'
       # Other containers (db,...) can expose its default ports if needed in development
