@@ -160,7 +160,6 @@ tasks.register('dockerComposeRestartApp', Exec) {
 					'./pocketo-config/.env',
 					'up',
 					'-d',
-					'--no-deps',
 					serviceName
 			]
 		}
