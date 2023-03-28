@@ -115,18 +115,24 @@ tasks.register('dockerImagePush', Exec) {
 tasks.register('dockerComposeUp', Exec) {
 	group = 'application'
 	description = 'Run Docker Compose up'
+	def imageName = "tonghoangvu/${project.name}:${project.version}"
+	environment('APP_IMAGE', imageName)
 	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'up', '-d']
 }
 
 tasks.register('dockerComposeDown', Exec) {
 	group = 'application'
 	description = 'Run Docker Compose down'
+	def imageName = "tonghoangvu/${project.name}:${project.version}"
+	environment('APP_IMAGE', imageName)
 	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'down']
 }
 
 tasks.register('dockerComposeLogs', Exec) {
 	group = 'application'
 	description = 'View Docker Compose logs'
+	def imageName = "tonghoangvu/${project.name}:${project.version}"
+	environment('APP_IMAGE', imageName)
 	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'logs', '-f']
 }
 
@@ -134,15 +140,19 @@ tasks.register('dockerComposeLogs', Exec) {
 tasks.register('dockerComposeRestartApp', Exec) {
 	group = 'application'
 	description = 'Reload app container in Docker Compose'
+	def imageName = "tonghoangvu/${project.name}:${project.version}"
 	def serviceName = 'app-blue'
 	doFirst {
 		exec {
+			environment('APP_IMAGE', imageName)
 			commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'stop', serviceName]
 		}
 	}
+	environment('APP_IMAGE', imageName)
 	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'pull', serviceName]
 	doLast {
 		exec {
+			environment('APP_IMAGE', imageName)
 			commandLine = [
 					'docker',
 					'compose',
