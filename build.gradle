@@ -145,6 +145,8 @@ tasks.register('dockerComposeRestartApp', Exec) {
 	environment('APP_IMAGE', imageName)
 	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'pull', serviceName]
 	doLast {
+		// Can not use restart command, must stop and up again
+		// https://docs.docker.com/engine/reference/commandline/compose_restart/
 		exec {
 			environment('APP_IMAGE', imageName)
 			commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'stop', serviceName]
