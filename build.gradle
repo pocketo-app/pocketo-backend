@@ -137,20 +137,20 @@ tasks.register('dockerComposeLogs', Exec) {
 }
 
 // https://fabianlee.org/2022/11/20/gradle-running-more-than-one-command-in-an-exec-task/
-tasks.register('dockerComposeRestartApp', Exec) {
+tasks.register('dockerComposeRestartApp') {
 	group = 'application'
 	description = 'Reload app container in Docker Compose'
 	def imageName = "tonghoangvu/${project.name}:${project.version}"
 	def serviceName = 'app-blue'
-	environment('APP_IMAGE', imageName)
-	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'pull', serviceName]
-	doLast {
-		// Can not use restart command, must stop and up again
-		// https://docs.docker.com/engine/reference/commandline/compose_restart/
+	// Can not use restart command, must stop and up again
+	// https://docs.docker.com/engine/reference/commandline/compose_restart/
+	doFirst {
 		exec {
 			environment('APP_IMAGE', imageName)
 			commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'stop', serviceName]
 		}
+	}
+	doLast {
 		exec {
 			environment('APP_IMAGE', imageName)
 			commandLine = [
