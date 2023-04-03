@@ -30,6 +30,9 @@ then
 	exit 0
 elif [[ $COMMAND == "restart" ]]
 then
+	echo Start pulling the Docker image
+	docker image pull "$APP_IMAGE" # Always pull the latest version of the specific tag
+
 	echo Stop the green service
 	docker compose --env-file $ENV_FILE stop $GREEN_SERVICE
 	echo Restart the green service

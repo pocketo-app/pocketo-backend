@@ -142,15 +142,13 @@ tasks.register('dockerComposeRestartApp', Exec) {
 	description = 'Reload app container in Docker Compose'
 	def imageName = "tonghoangvu/${project.name}:${project.version}"
 	def serviceName = 'app-blue'
-	doFirst {
+	environment('APP_IMAGE', imageName)
+	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'pull', serviceName]
+	doLast {
 		exec {
 			environment('APP_IMAGE', imageName)
 			commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'stop', serviceName]
 		}
-	}
-	environment('APP_IMAGE', imageName)
-	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'pull', serviceName]
-	doLast {
 		exec {
 			environment('APP_IMAGE', imageName)
 			commandLine = [
