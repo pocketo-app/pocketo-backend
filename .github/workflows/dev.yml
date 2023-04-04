@@ -43,6 +43,7 @@ jobs:
     - name: Push Docker image
       run: ./gradlew dockerImagePush -PimageTagSuffix="-dev-${GITHUB_SHA::7}"
   deploy:
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - name: SSH Remote Commands
