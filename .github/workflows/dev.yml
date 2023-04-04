@@ -33,3 +33,5 @@ jobs:
         gradle-version: wrapper
     - name: Check code format
       run: ./gradlew checkFormat
+    - name: Run tests
+      run: ./gradlew test
