@@ -33,3 +33,12 @@ jobs:
         gradle-version: wrapper
     - name: Run Gradle checking tasks
       run: ./gradlew check # Includes checkFormat, test,...
+    - name: Build Docker image
+      run: ./gradlew dockerImageBuild
+    - name: Log in to Docker registry
+      uses: docker/login-action@v2.1.0
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+    - name: Push Docker image
+      run: ./gradlew dockerImagePush
