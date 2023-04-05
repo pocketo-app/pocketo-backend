@@ -90,7 +90,8 @@ tasks.register('dockerImageBuild', Exec) {
 	group = 'application'
 	description = 'Build Docker image'
 	dependsOn = ['bootJar']
-	def imageName = "tonghoangvu/${project.name}:${project.version}"
+	def imageTag = project.findProperty('imageTag') ?: project.version
+	def imageName = "tonghoangvu/${project.name}:${imageTag}"
 	def jarFile = bootJar.archiveFileName.get()
 	environment('DOCKER_BUILDKIT', 1)
 	commandLine = [
@@ -108,7 +109,8 @@ tasks.register('dockerImageBuild', Exec) {
 tasks.register('dockerImagePush', Exec) {
 	group = 'application'
 	description = 'Push Docker image'
-	def imageName = "tonghoangvu/${project.name}:${project.version}"
+	def imageTag = project.findProperty('imageTag') ?: project.version
+	def imageName = "tonghoangvu/${project.name}:${imageTag}"
 	commandLine = ['docker', 'image', 'push', imageName]
 }
 
