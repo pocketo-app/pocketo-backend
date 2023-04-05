@@ -58,5 +58,7 @@ jobs:
           port: ${{ secrets.TEST_SERVER_PORT }}
           envs: GITHUB_SHA, TEST_SERVER_WORKDIR
           script: |
-            cd "${TEST_SERVER_WORKDIR}"
-            sudo bash ./runner.sh "dev-${GITHUB_SHA::7}" restart
+            echo $GITHUB_SHA
+            echo $TEST_SERVER_WORKDIR
+            cd ${TEST_SERVER_WORKDIR}
+            bash ./runner.sh "dev-${GITHUB_SHA::7}" restart
