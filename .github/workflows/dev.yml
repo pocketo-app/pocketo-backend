@@ -50,7 +50,7 @@ jobs:
         uses: appleboy/ssh-action@v0.1.9
         env:
           GITHUB_SHA: ${GITHUB_SHA}
-          TEST_SERVER_WORKDIR: ${TEST_SERVER_WORKDIR}
+          TEST_SERVER_WORKDIR: ${{ secrets.TEST_SERVER_WORKDIR }}
         with:
           host: ${{ secrets.TEST_SERVER_HOST }}
           username: ${{ secrets.TEST_SERVER_USERNAME }}
@@ -60,5 +60,5 @@ jobs:
           script: |
             echo $GITHUB_SHA
             echo $TEST_SERVER_WORKDIR
-            cd ${TEST_SERVER_WORKDIR}
+            cd "${TEST_SERVER_WORKDIR}"
             bash ./runner.sh "dev-${GITHUB_SHA::7}" restart
