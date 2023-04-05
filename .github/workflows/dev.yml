@@ -16,9 +16,6 @@ on:
 permissions:
   contents: read
 
-env:
-  APP_IMAGE: dev-${GITHUB_SHA::7}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -37,14 +34,14 @@ jobs:
     - name: Run Gradle checking tasks
       run: ./gradlew check # Includes checkFormat, test,...
     - name: Build Docker image
-      run: ./gradlew dockerImageBuild -PimageTag=${APP_IMAGE}
+      run: ./gradlew dockerImageBuild -PimageTag="dev-${GITHUB_SHA::7}"
     - name: Log in to Docker registry
       uses: docker/login-action@v2.1.0
       with:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_TOKEN }}
     - name: Push Docker image
-      run: ./gradlew dockerImagePush -PimageTag=$APP_IMAGE
+      run: ./gradlew dockerImagePush -PimageTag="dev-${GITHUB_SHA::7}"
   deploy:
     needs: [build]
     runs-on: ubuntu-latest
@@ -56,4 +53,4 @@ jobs:
           username: ${{ secrets.TEST_SERVER_USERNAME }}
           password: ${{ secrets.TEST_SERVER_PASSWORD }}
           port: ${{ secrets.TEST_SERVER_PORT }}
-          script: echo ${APP_IMAGE}
+          script: echo "dev-${GITHUB_SHA::7}"
