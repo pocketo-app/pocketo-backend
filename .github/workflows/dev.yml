@@ -56,7 +56,7 @@ jobs:
           username: ${{ secrets.TEST_SERVER_USERNAME }}
           password: ${{ secrets.TEST_SERVER_PASSWORD }}
           port: ${{ secrets.TEST_SERVER_PORT }}
-          envs: GITHUB_SHA, TEST_SERVER_WORKDIR
+          envs: GITHUB_SHA,TEST_SERVER_WORKDIR
           script: |
             echo $GITHUB_SHA
             echo $TEST_SERVER_WORKDIR
