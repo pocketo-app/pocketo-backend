@@ -61,4 +61,4 @@ jobs:
             echo $GITHUB_SHA
             echo $TEST_SERVER_WORKDIR
             cd "${TEST_SERVER_WORKDIR}"
-            bash ./runner.sh "dev-${GITHUB_SHA::7}" restart
+            bash ./runner.sh "tonghoangvu/pocketo-backend:dev-${GITHUB_SHA::7}" restart
