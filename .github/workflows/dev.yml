@@ -5,13 +5,13 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
-name: Development CI/CD
+name: Development workflow
 
 on:
   push:
-    branches: [ "setup/ci-cd" ]
+    branches: [ "dev" ]
   pull_request:
-    branches: [ "setup/ci-cd" ]
+    branches: [ "dev" ]
 
 permissions:
   contents: read
@@ -28,7 +28,7 @@ jobs:
         java-version: '17'
         distribution: 'adopt'
     - name: Setup Gradle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+      uses: gradle/gradle-build-action@v2.4.0
       with:
         gradle-version: wrapper
     - name: Run Gradle checking tasks
@@ -56,9 +56,7 @@ jobs:
           username: ${{ secrets.TEST_SERVER_USERNAME }}
           password: ${{ secrets.TEST_SERVER_PASSWORD }}
           port: ${{ secrets.TEST_SERVER_PORT }}
-          envs: GITHUB_SHA,TEST_SERVER_WORKDIR
+          envs: GITHUB_SHA, TEST_SERVER_WORKDIR
           script: |
-            echo $GITHUB_SHA
-            echo $TEST_SERVER_WORKDIR
             cd "${TEST_SERVER_WORKDIR}"
             bash ./runner.sh "tonghoangvu/pocketo-backend:dev-${GITHUB_SHA::7}" restart
