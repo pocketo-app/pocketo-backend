@@ -50,10 +50,13 @@ jobs:
         uses: appleboy/ssh-action@v0.1.9
         env:
           GITHUB_SHA: ${GITHUB_SHA}
+          TEST_SERVER_WORKDIR: ${TEST_SERVER_WORKDIR}
         with:
           host: ${{ secrets.TEST_SERVER_HOST }}
           username: ${{ secrets.TEST_SERVER_USERNAME }}
           password: ${{ secrets.TEST_SERVER_PASSWORD }}
           port: ${{ secrets.TEST_SERVER_PORT }}
-          envs: GITHUB_SHA
-          script: echo "dev-${GITHUB_SHA::7}"
+          envs: GITHUB_SHA, TEST_SERVER_WORKDIR
+          script: |
+            cd "${TEST_SERVER_WORKDIR}"
+            sudo bash ./runner.sh "dev-${GITHUB_SHA::7}" restart
