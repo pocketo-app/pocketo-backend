@@ -5,7 +5,7 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
-name: Development workflow
+name: Dev workflow
 
 on:
   push:
@@ -38,8 +38,8 @@ jobs:
     - name: Log in to Docker registry
       uses: docker/login-action@v2.1.0
       with:
-        username: ${{ secrets.DOCKER_HUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+        username: ${{ vars.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
     - name: Push Docker image
       run: ./gradlew dockerImagePush -PimageTag="dev-${GITHUB_SHA::7}"
   deploy:
@@ -50,13 +50,15 @@ jobs:
         uses: appleboy/ssh-action@v0.1.9
         env:
           GITHUB_SHA: ${GITHUB_SHA}
-          TEST_SERVER_WORKDIR: ${{ secrets.TEST_SERVER_WORKDIR }}
+          SERVER_WORKDIR: ${{ secrets.SERVER_WORKDIR }}
+          DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
+          DOCKER_IMAGE_NAME: ${{ vars.DOCKER_IMAGE_NAME }}
         with:
-          host: ${{ secrets.TEST_SERVER_HOST }}
-          username: ${{ secrets.TEST_SERVER_USERNAME }}
-          password: ${{ secrets.TEST_SERVER_PASSWORD }}
-          port: ${{ secrets.TEST_SERVER_PORT }}
-          envs: GITHUB_SHA, TEST_SERVER_WORKDIR
+          host: ${{ vars.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_PORT }}
+          envs: GITHUB_SHA, SERVER_WORKDIR, DOCKER_USERNAME, DOCKER_IMAGE_NAME
           script: |
-            cd "${TEST_SERVER_WORKDIR}"
-            bash ./runner.sh "tonghoangvu/pocketo-backend:dev-${GITHUB_SHA::7}" restart
+            cd "${SERVER_WORKDIR}"
+            bash ./runner.sh "${DOCKER_USERNAME}/${DOCKER_IMAGE_NAME}:dev-${GITHUB_SHA::7}" restart
