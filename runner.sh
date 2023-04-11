@@ -34,7 +34,7 @@ then
 	docker image pull "$APP_IMAGE" # Always pull the latest version of the specific tag
 
 	# Can not use restart command, must stop and up again
-  # https://docs.docker.com/engine/reference/commandline/compose_restart/
+	# https://docs.docker.com/engine/reference/commandline/compose_restart/
 	echo Stop the green service
 	docker compose --env-file $ENV_FILE stop $GREEN_SERVICE
 	echo Restart the green service
