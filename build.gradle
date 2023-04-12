@@ -64,7 +64,7 @@ bootJar {
 		if (gradle.taskGraph.hasTask(':dockerImageBuildIfChanged')) {
 			println('Something changed, rebuild the Docker image')
 			exec {
-				def imageName = 'tonghoangvu/pocketo-backend:local'
+				def appImage = 'tonghoangvu/pocketo-backend:local'
 				def jarFile = archiveFileName.get()
 				environment('DOCKER_BUILDKIT', 1)
 				commandLine = [
@@ -72,7 +72,7 @@ bootJar {
 						'image',
 						'build',
 						'-t',
-						imageName,
+						appImage,
 						'--build-arg',
 						"JAR_FILE=${jarFile}",
 						'.'
@@ -93,8 +93,8 @@ tasks.register('dockerImageBuild', Exec) {
 	group = 'application'
 	description = 'Build Docker image'
 	dependsOn = ['bootJar']
-	def imageNameProperty = project.findProperty('imageName')
-	def imageName = imageNameProperty == null ? 'tonghoangvu/pocketo-backend:local' : imageNameProperty.toString()
+	def appImageProperty = project.findProperty('appImage')
+	def appImage = appImageProperty == null ? 'tonghoangvu/pocketo-backend:local' : appImageProperty.toString()
 	def jarFile = bootJar.archiveFileName.get()
 	environment('DOCKER_BUILDKIT', 1)
 	commandLine = [
@@ -102,7 +102,7 @@ tasks.register('dockerImageBuild', Exec) {
 			'image',
 			'build',
 			'-t',
-			imageName,
+			appImage,
 			'--build-arg',
 			"JAR_FILE=${jarFile}",
 			'.'
@@ -112,52 +112,56 @@ tasks.register('dockerImageBuild', Exec) {
 tasks.register('dockerComposeUp', Exec) {
 	group = 'application'
 	description = 'Run Docker Compose up'
-	def imageName = 'tonghoangvu/pocketo-backend:local'
-	environment('APP_IMAGE', imageName)
-	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'up', '-d']
+	def appImage = 'tonghoangvu/pocketo-backend:local'
+	def envFile = './pocketo-config/.env'
+	environment('APP_IMAGE', appImage)
+	commandLine = ['docker', 'compose', '--env-file', envFile, 'up', '-d']
 }
 
 tasks.register('dockerComposeDown', Exec) {
 	group = 'application'
 	description = 'Run Docker Compose down'
-	def imageName = 'tonghoangvu/pocketo-backend:local'
-	environment('APP_IMAGE', imageName)
-	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'down']
+	def appImage = 'tonghoangvu/pocketo-backend:local'
+	def envFile = './pocketo-config/.env'
+	environment('APP_IMAGE', appImage)
+	commandLine = ['docker', 'compose', '--env-file', envFile, 'down']
 }
 
 tasks.register('dockerComposeLogs', Exec) {
 	group = 'application'
 	description = 'View Docker Compose logs'
-	def imageName = 'tonghoangvu/pocketo-backend:local'
-	environment('APP_IMAGE', imageName)
-	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'logs', '-f']
+	def appImage = 'tonghoangvu/pocketo-backend:local'
+	def envFile = './pocketo-config/.env'
+	environment('APP_IMAGE', appImage)
+	commandLine = ['docker', 'compose', '--env-file', envFile, 'logs', '-f']
 }
 
 // https://fabianlee.org/2022/11/20/gradle-running-more-than-one-command-in-an-exec-task/
 tasks.register('dockerComposeRestartApp') {
 	group = 'application'
 	description = 'Reload app container in Docker Compose'
-	def imageName = 'tonghoangvu/pocketo-backend:local'
-	def serviceName = 'app-blue'
+	def appImage = 'tonghoangvu/pocketo-backend:local'
+	def envFile = './pocketo-config/.env'
+	def blueService = 'app-blue'
 	// Can not use restart command, must stop and up again
 	// https://docs.docker.com/engine/reference/commandline/compose_restart/
 	doFirst {
 		exec {
-			environment('APP_IMAGE', imageName)
-			commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'stop', serviceName]
+			environment('APP_IMAGE', appImage)
+			commandLine = ['docker', 'compose', '--env-file', envFile, 'stop', blueService]
 		}
 	}
 	doLast {
 		exec {
-			environment('APP_IMAGE', imageName)
+			environment('APP_IMAGE', appImage)
 			commandLine = [
 					'docker',
 					'compose',
 					'--env-file',
-					'./pocketo-config/.env',
+					envFile,
 					'up',
 					'-d',
-					serviceName
+					blueService
 			]
 		}
 	}
