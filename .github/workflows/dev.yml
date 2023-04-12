@@ -16,6 +16,9 @@ on:
 permissions:
   contents: read
 
+env:
+  APP_IMAGE=${{ vars.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:dev-${GITHUB_SHA::7}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -34,14 +37,14 @@ jobs:
     - name: Run Gradle checking tasks
       run: ./gradlew check # Includes checkFormat, test,...
     - name: Build Docker image
-      run: ./gradlew dockerImageBuild -PappImage="${{ vars.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:dev-${GITHUB_SHA::7}"
+      run: ./gradlew dockerImageBuild -PappImage="${APP_IMAGE}"
     - name: Log in to Docker registry
       uses: docker/login-action@v2.1.0
       with:
         username: ${{ vars.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
     - name: Push Docker image
-      run: docker image push "${{ vars.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:dev-${GITHUB_SHA::7}"
+      run: docker image push "${APP_IMAGE}"
   deploy:
     needs: [build]
     runs-on: ubuntu-latest
@@ -49,16 +52,13 @@ jobs:
       - name: SSH Remote Commands
         uses: appleboy/ssh-action@v0.1.9
         env:
-          GITHUB_SHA: ${GITHUB_SHA}
           SERVER_WORKDIR: ${{ secrets.SERVER_WORKDIR }}
-          DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
-          DOCKER_IMAGE_NAME: ${{ vars.DOCKER_IMAGE_NAME }}
         with:
           host: ${{ vars.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
-          envs: GITHUB_SHA, SERVER_WORKDIR, DOCKER_USERNAME, DOCKER_IMAGE_NAME
+          envs: APP_IMAGE, SERVER_WORKDIR
           script: |
             cd "${SERVER_WORKDIR}"
-            bash ./runner.sh "${DOCKER_USERNAME}/${DOCKER_IMAGE_NAME}:dev-${GITHUB_SHA::7}" restart
+            bash ./runner.sh "${APP_IMAGE}" restart
