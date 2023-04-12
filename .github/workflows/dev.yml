@@ -53,7 +53,7 @@ jobs:
         uses: appleboy/ssh-action@v0.1.9
         env:
           SERVER_WORKDIR: ${{ secrets.SERVER_WORKDIR }}
-          APP_IMAGE: "${{ vars.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:dev-${GITHUB_SHA::7}"
+          APP_IMAGE: ${{ vars.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:dev-${GITHUB_SHA::7}
         with:
           host: ${{ vars.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
