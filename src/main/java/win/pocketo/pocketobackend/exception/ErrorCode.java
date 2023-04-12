@@ -1,4 +1,4 @@
-package dev.pocketo.pocketobackend.exception;
+package win.pocketo.pocketobackend.exception;
 
 import java.util.List;
 import lombok.Getter;

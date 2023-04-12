@@ -8,7 +8,7 @@ plugins {
 	id 'com.diffplug.spotless' version '6.18.0'
 }
 
-group = 'dev.pocketo'
+group = 'win.pocketo'
 version = '0.0.1-SNAPSHOT'
 description = 'Pocketo API backend'
 sourceCompatibility = '17'
@@ -177,7 +177,7 @@ spotless {
 	java {
 		// Use Spring Java Format (waiting for Spotless integration)
 		removeUnusedImports()
-		importOrder('|\\#', 'dev.pocketo|\\#dev.pocketo')
+		importOrder('|\\#', 'win.pocketo|\\#win.pocketo')
 		// formatAnnotations() // Conflict with Spring Java Format
 	}
 	format 'Yaml', {

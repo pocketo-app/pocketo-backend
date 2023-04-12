@@ -1,4 +1,4 @@
-package dev.pocketo.pocketobackend.exception;
+package win.pocketo.pocketobackend.exception;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import dev.pocketo.pocketobackend.util.CodeUtil;
+import win.pocketo.pocketobackend.util.CodeUtil;
 
 @RestControllerAdvice
 @Slf4j

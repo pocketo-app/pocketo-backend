@@ -1,4 +1,4 @@
-package dev.pocketo.pocketobackend.exception;
+package win.pocketo.pocketobackend.exception;
 
 public enum ActionOnError {
 

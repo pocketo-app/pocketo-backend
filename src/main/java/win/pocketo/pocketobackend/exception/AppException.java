@@ -1,4 +1,4 @@
-package dev.pocketo.pocketobackend.exception;
+package win.pocketo.pocketobackend.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

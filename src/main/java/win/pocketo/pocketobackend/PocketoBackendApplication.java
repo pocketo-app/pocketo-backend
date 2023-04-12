@@ -1,4 +1,4 @@
-package dev.pocketo.pocketobackend;
+package win.pocketo.pocketobackend;
 
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;

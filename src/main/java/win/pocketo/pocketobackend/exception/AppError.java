@@ -1,4 +1,4 @@
-package dev.pocketo.pocketobackend.exception;
+package win.pocketo.pocketobackend.exception;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.servlet.http.HttpServletRequest;

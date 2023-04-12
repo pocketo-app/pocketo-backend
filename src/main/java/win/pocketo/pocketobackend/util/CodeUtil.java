@@ -1,4 +1,4 @@
-package dev.pocketo.pocketobackend.util;
+package win.pocketo.pocketobackend.util;
 
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.validation.BindException;
