@@ -18,6 +18,8 @@ permissions:
 
 # Cannot declare a global env var which contains GITHUB_SHA env var
 # Because GITHUB_SHA only available to every step (not job or workflow)
+# Cannot use ${GITHUB_SHA::7} as env value, always specify it in a command
+# Because the "::7" part only evaluated at runtime, not in an assignment
 
 jobs:
   build:
@@ -53,13 +55,16 @@ jobs:
         uses: appleboy/ssh-action@v0.1.9
         env:
           SERVER_WORKDIR: ${{ secrets.SERVER_WORKDIR }}
-          APP_IMAGE: ${{ vars.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:dev-${GITHUB_SHA::7}
+          # Don't combine these env vars into APP_IMAGE, see the reason above
+          DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
+          DOCKER_IMAGE_NAME: ${{ vars.DOCKER_IMAGE_NAME }}
+          GITHUB_SHA: ${GITHUB_SHA}
         with:
           host: ${{ vars.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
-          envs: SERVER_WORKDIR, APP_IMAGE
+          envs: SERVER_WORKDIR, DOCKER_USERNAME, DOCKER_IMAGE_NAME, GITHUB_SHA
           script: |
             cd "${SERVER_WORKDIR}"
-            bash ./runner.sh "${APP_IMAGE}" restart
+            bash ./runner.sh "${DOCKER_USERNAME}/${DOCKER_IMAGE_NAME}:dev-${GITHUB_SHA::7}" restart
