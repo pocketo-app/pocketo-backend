@@ -64,7 +64,7 @@ bootJar {
 		if (gradle.taskGraph.hasTask(':dockerImageBuildIfChanged')) {
 			println('Something changed, rebuild the Docker image')
 			exec {
-				def imageName = "tonghoangvu/${project.name}:${project.version}"
+				def imageName = 'tonghoangvu/pocketo-backend:local'
 				def jarFile = archiveFileName.get()
 				environment('DOCKER_BUILDKIT', 1)
 				commandLine = [
@@ -82,7 +82,7 @@ bootJar {
 	}
 }
 
-tasks.register('dockerImageBuildIfChanged') {
+tasks.register('dockerImageBuildNeeded') {
 	// This task is just a signal to trigger Docker image build in bootJar
 	group = 'application'
 	description = 'Build Docker image if code is changed'
@@ -93,8 +93,8 @@ tasks.register('dockerImageBuild', Exec) {
 	group = 'application'
 	description = 'Build Docker image'
 	dependsOn = ['bootJar']
-	def imageTag = project.findProperty('imageTag') ?: project.version
-	def imageName = "tonghoangvu/${project.name}:${imageTag}"
+	def imageNameProperty = project.findProperty('imageName')
+	def imageName = imageNameProperty == null ? 'tonghoangvu/pocketo-backend:local' : imageNameProperty.toString()
 	def jarFile = bootJar.archiveFileName.get()
 	environment('DOCKER_BUILDKIT', 1)
 	commandLine = [
@@ -109,18 +109,10 @@ tasks.register('dockerImageBuild', Exec) {
 	]
 }
 
-tasks.register('dockerImagePush', Exec) {
-	group = 'application'
-	description = 'Push Docker image'
-	def imageTag = project.findProperty('imageTag') ?: project.version
-	def imageName = "tonghoangvu/${project.name}:${imageTag}"
-	commandLine = ['docker', 'image', 'push', imageName]
-}
-
 tasks.register('dockerComposeUp', Exec) {
 	group = 'application'
 	description = 'Run Docker Compose up'
-	def imageName = "tonghoangvu/${project.name}:${project.version}"
+	def imageName = 'tonghoangvu/pocketo-backend:local'
 	environment('APP_IMAGE', imageName)
 	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'up', '-d']
 }
@@ -128,7 +120,7 @@ tasks.register('dockerComposeUp', Exec) {
 tasks.register('dockerComposeDown', Exec) {
 	group = 'application'
 	description = 'Run Docker Compose down'
-	def imageName = "tonghoangvu/${project.name}:${project.version}"
+	def imageName = 'tonghoangvu/pocketo-backend:local'
 	environment('APP_IMAGE', imageName)
 	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'down']
 }
@@ -136,7 +128,7 @@ tasks.register('dockerComposeDown', Exec) {
 tasks.register('dockerComposeLogs', Exec) {
 	group = 'application'
 	description = 'View Docker Compose logs'
-	def imageName = "tonghoangvu/${project.name}:${project.version}"
+	def imageName = 'tonghoangvu/pocketo-backend:local'
 	environment('APP_IMAGE', imageName)
 	commandLine = ['docker', 'compose', '--env-file', './pocketo-config/.env', 'logs', '-f']
 }
@@ -145,7 +137,7 @@ tasks.register('dockerComposeLogs', Exec) {
 tasks.register('dockerComposeRestartApp') {
 	group = 'application'
 	description = 'Reload app container in Docker Compose'
-	def imageName = "tonghoangvu/${project.name}:${project.version}"
+	def imageName = 'tonghoangvu/pocketo-backend:local'
 	def serviceName = 'app-blue'
 	// Can not use restart command, must stop and up again
 	// https://docs.docker.com/engine/reference/commandline/compose_restart/
