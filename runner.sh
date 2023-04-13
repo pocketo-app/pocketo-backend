@@ -39,6 +39,7 @@ then
 	docker compose --env-file $ENV_FILE stop $GREEN_SERVICE
 	echo Restart the green service
 	docker compose --env-file $ENV_FILE up $GREEN_SERVICE -d
+
 	echo "Wait $WAIT_TIME seconds for the green service starting"
 	sleep $WAIT_TIME
 
@@ -46,8 +47,6 @@ then
 	docker compose --env-file $ENV_FILE stop $BLUE_SERVICE
 	echo Restart the blue service
 	docker compose --env-file $ENV_FILE up $BLUE_SERVICE -d
-	echo "Wait $WAIT_TIME seconds for the blue service starting"
-	sleep $WAIT_TIME
 
 	echo Done
 	exit 0
