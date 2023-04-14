@@ -2,13 +2,13 @@
 # https://github.com/jonashackt/spring-boot-buildpack#using-layered-jars-inside-dockerfiles
 
 # FROM must be the first statement
-FROM openjdk:17-alpine AS builder
+FROM eclipse-temurin:17-jre-alpine AS builder
 WORKDIR /workspace/
 ARG JAR_FILE
 COPY ./build/libs/${JAR_FILE} ./app.jar
 RUN java -Djarmode=layertools -jar ./app.jar extract
 
-FROM openjdk:17-alpine
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /workspace/
 COPY --from=builder /workspace/dependencies/ ./
 COPY --from=builder /workspace/spring-boot-loader/ ./
