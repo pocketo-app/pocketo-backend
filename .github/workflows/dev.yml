@@ -39,7 +39,9 @@ jobs:
     - name: Run Gradle checking tasks
       run: ./gradlew check # Includes checkFormat, test,...
     - name: Build Docker image
-      run: ./gradlew dockerImageBuild -PappImage="${{ vars.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:dev-${GITHUB_SHA::7}"
+      env:
+        DOCKER_BUILDKIT: 1
+      run: docker image build -t "${{ vars.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:dev-${GITHUB_SHA::7}" .
     - name: Log in to Docker registry
       uses: docker/login-action@v2.1.0
       with:

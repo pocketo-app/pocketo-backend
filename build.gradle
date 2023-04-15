@@ -56,6 +56,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 bootJar {
+	archiveFileName = 'app.jar' // Avoid multiple .jar files in ./build/libs/
 	layered {
 		enabled = true // Default is true
 	}
@@ -65,18 +66,8 @@ bootJar {
 			println('Something changed, rebuild the Docker image')
 			exec {
 				def appImage = 'tonghoangvu/pocketo-backend:local'
-				def jarFile = archiveFileName.get()
 				environment('DOCKER_BUILDKIT', 1)
-				commandLine = [
-						'docker',
-						'image',
-						'build',
-						'-t',
-						appImage,
-						'--build-arg',
-						"JAR_FILE=${jarFile}",
-						'.'
-				]
+				commandLine = ['docker', 'image', 'build', '-t', appImage, '.']
 			}
 		}
 	}
@@ -93,20 +84,9 @@ tasks.register('dockerImageBuild', Exec) {
 	group = 'application'
 	description = 'Build Docker image'
 	dependsOn = ['bootJar']
-	def appImageProperty = project.findProperty('appImage')
-	def appImage = appImageProperty == null ? 'tonghoangvu/pocketo-backend:local' : appImageProperty.toString()
-	def jarFile = bootJar.archiveFileName.get()
+	def appImage = 'tonghoangvu/pocketo-backend:local'
 	environment('DOCKER_BUILDKIT', 1)
-	commandLine = [
-			'docker',
-			'image',
-			'build',
-			'-t',
-			appImage,
-			'--build-arg',
-			"JAR_FILE=${jarFile}",
-			'.'
-	]
+	commandLine = ['docker', 'image', 'build', '-t', appImage, '.']
 }
 
 tasks.register('dockerComposeUp', Exec) {
@@ -154,15 +134,7 @@ tasks.register('dockerComposeRestartApp') {
 	doLast {
 		exec {
 			environment('APP_IMAGE', appImage)
-			commandLine = [
-					'docker',
-					'compose',
-					'--env-file',
-					envFile,
-					'up',
-					'-d',
-					blueService
-			]
+			commandLine = ['docker', 'compose', '--env-file', envFile, 'up', '-d', blueService]
 		}
 	}
 }

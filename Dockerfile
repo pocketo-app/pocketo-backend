@@ -4,8 +4,7 @@
 # FROM must be the first statement
 FROM eclipse-temurin:17-jre-alpine AS builder
 WORKDIR /workspace/
-ARG JAR_FILE
-COPY ./build/libs/${JAR_FILE} ./app.jar
+COPY ./build/libs/app.jar ./app.jar
 RUN java -Djarmode=layertools -jar ./app.jar extract
 
 FROM eclipse-temurin:17-jre-alpine
