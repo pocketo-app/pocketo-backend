@@ -61,7 +61,7 @@ bootJar {
 	}
 	doLast {
 		// Only run if bootJar is not up-to-date
-		if (gradle.taskGraph.hasTask(':dockerImageBuildIfChanged')) {
+		if (gradle.taskGraph.hasTask(':dockerImageBuildNeeded')) {
 			println('Something changed, rebuild the Docker image')
 			exec {
 				def appImage = 'tonghoangvu/pocketo-backend:local'
