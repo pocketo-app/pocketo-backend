@@ -38,6 +38,8 @@ jobs:
         gradle-version: wrapper
     - name: Run Gradle checking tasks
       run: ./gradlew check # Includes checkFormat, test,...
+    - name: Run Gradle build JAR
+      run: ./gradlew bootJar
     - name: Build Docker image
       env:
         DOCKER_BUILDKIT: 1
