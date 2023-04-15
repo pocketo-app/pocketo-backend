@@ -15,5 +15,6 @@ COPY --from=builder /workspace/snapshot-dependencies/ ./
 COPY --from=builder /workspace/application/ ./
 ENTRYPOINT ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "org.springframework.boot.loader.JarLauncher"]
 
+EXPOSE 8080
 LABEL author.name="Vu Tong"
 LABEL author.email="tonghoangvu@outlook.com"

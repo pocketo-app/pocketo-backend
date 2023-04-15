@@ -13,17 +13,20 @@ services:
       - './pocketo-config/.env.app'
     environment:
       - RUN_VIA_DOCKER_COMPOSE=1
-      - SERVER_PORT=${SERVER_PORT:?} # Pass SERVER_PORT from .env to container
     depends_on:
       - db
       - cache
     pull_policy: never # Don't pull app image in development, and pull it manually in production
+    ports:
+      - "${BLUE_HOST_PORT:?}:8080"
   app-green:
     extends:
       service: app-blue
     container_name: pocketo-app-green
     profiles:
       - production
+    ports:
+      - "${GREEN_HOST_PORT:?}:8080"
   db:
     image: 'postgres:15-alpine'
     container_name: pocketo-db
