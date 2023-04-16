@@ -1,5 +1,7 @@
 package win.pocketo.pocketobackend.util;
 
+import java.util.Optional;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.validation.BindException;
 
@@ -13,7 +15,7 @@ public class CodeUtil {
 	}
 
 	public static String getFirstExceptionMessage(ConstraintViolationException ex, String defaultMessage) {
-		var firstViolation = ex.getConstraintViolations().stream().findFirst();
+		Optional<ConstraintViolation<?>> firstViolation = ex.getConstraintViolations().stream().findFirst();
 		if (firstViolation.isEmpty()) {
 			return defaultMessage;
 		}
