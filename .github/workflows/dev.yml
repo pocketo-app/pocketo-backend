@@ -9,9 +9,9 @@ name: Dev workflow
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: ['dev']
   pull_request:
-    branches: [ "dev" ]
+    branches: ['dev']
 
 permissions:
   contents: read
@@ -23,9 +23,9 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04 # Latest LTS
     steps:
-    - name: Checkout the repository
+    - name: Check out the repository
       uses: actions/checkout@v3
     - name: Set up JDK 17
       uses: actions/setup-java@v3
@@ -53,7 +53,7 @@ jobs:
       run: docker image push "${{ vars.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:dev-${GITHUB_SHA::7}"
   deploy:
     needs: [build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04 # Latest LTS
     steps:
       - name: SSH Remote Commands
         uses: appleboy/ssh-action@v0.1.9

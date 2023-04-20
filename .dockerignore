@@ -1,0 +1,10 @@
+# It's nice to have a .dockerignore file
+# Even if there is no COPY ALL statement in your Dockerfile
+# https://codefresh.io/blog/not-ignore-dockerignore-2/
+
+# Excludes all files and folders by default
+*/
+*.*
+
+# Includes the output JAR folder, Dockerfile needs it
+!build/libs/
