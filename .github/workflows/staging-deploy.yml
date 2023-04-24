@@ -5,12 +5,10 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
-name: Dev workflow
+name: Staging deploy
 
 on:
-  push:
-    branches: ['dev']
-  pull_request:
+  push: # On push commits and merge a pull request
     branches: ['dev']
 
 permissions:
@@ -52,7 +50,7 @@ jobs:
     - name: Push Docker image
       run: docker image push "${{ vars.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:dev-${GITHUB_SHA::7}"
   deploy:
-    needs: [build]
+    needs: ['build']
     runs-on: ubuntu-22.04 # Latest LTS
     steps:
       - name: SSH Remote Commands
