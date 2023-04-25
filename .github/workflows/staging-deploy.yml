@@ -22,6 +22,9 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-22.04 # Latest LTS
+    environment:
+      name: staging
+      url: https://hub.docker.com/r/tonghoangvu/pocketo-backend
     steps:
     - name: Check out the repository
       uses: actions/checkout@v3
@@ -52,6 +55,9 @@ jobs:
   deploy:
     needs: ['build']
     runs-on: ubuntu-22.04 # Latest LTS
+    environment:
+      name: staging
+      url: https://api.pocketo.win
     steps:
       - name: SSH Remote Commands
         uses: appleboy/ssh-action@v0.1.9
