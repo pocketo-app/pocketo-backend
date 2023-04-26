@@ -5,8 +5,6 @@ services:
   app-blue:
     image: ${APP_IMAGE:?}
     container_name: pocketo-app-blue
-    volumes:
-      - './pocketo-data/app/logs:/workspace/logs/'
     depends_on:
       - db
       - cache
@@ -19,10 +17,6 @@ services:
   db:
     image: 'postgres:15-alpine'
     container_name: pocketo-db
-    volumes:
-      - './pocketo-data/db:/var/lib/postgresql/data/'
   cache:
     image: 'redis:7-alpine'
     container_name: pocketo-cache
-    volumes:
-      - './pocketo-data/cache:/data/'

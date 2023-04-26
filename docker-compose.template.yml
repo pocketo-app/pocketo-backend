@@ -17,6 +17,10 @@
 # - 'X:5432', 'X:6379' (to use the services from outside)
 # Exposing host ports should not be duplicated (the services won't start)
 
+# volumes:
+# Preserve data of containers by mounting data folders to the outside
+# The default values below should be kept in both local and production
+
 # environment:
 # The required env vars for each service are listed below
 # For app services, env vars correspond to Spring Boot properties (written as UPPER_CASE)
@@ -30,6 +34,8 @@ services:
     ports:
       - '8080:8080'
       - '5005:5005'
+    volumes:
+      - './pocketo-data/app-blue/logs:/workspace/logs/'
     environment:
       - SPRING_DATASOURCE_URL=
       - SPRING_DATASOURCE_USERNAME=
@@ -41,6 +47,8 @@ services:
     pull_policy: never
     ports:
       - '8081:8080'
+    volumes:
+      - './pocketo-data/app-green/logs:/workspace/logs/'
     environment:
       - SPRING_DATASOURCE_URL=
       - SPRING_DATASOURCE_USERNAME=
@@ -52,6 +60,8 @@ services:
     pull_policy: missing
     ports:
       - '5432:5432'
+    volumes:
+      - './pocketo-data/db:/var/lib/postgresql/data/'
     environment:
       - POSTGRES_DB=
       - POSTGRES_USER=
@@ -61,5 +71,7 @@ services:
     pull_policy: missing
     ports:
       - '6379:6379'
+    volumes:
+      - './pocketo-data/cache:/data/'
     environment:
       - REDIS_ARGS=
