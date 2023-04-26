@@ -11,8 +11,7 @@ public class PocketoBackendApplication {
 
 	public static void main(String[] args) {
 		if (!isAppRunViaDockerCompose()) {
-			log.error("Please run the app via Docker Compose");
-			System.exit(1);
+			log.warn("The app is running without Docker Compose");
 		}
 		SpringApplication.run(PocketoBackendApplication.class, args);
 	}

@@ -57,6 +57,7 @@ tasks.withType(JavaCompile).configureEach {
 
 bootJar {
 	archiveFileName = 'app.jar' // Avoid multiple .jar files in ./build/libs/
+	exclude('application-*.properties')
 	layered {
 		enabled = true // Default is true
 	}

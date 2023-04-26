@@ -1,5 +1,7 @@
 ### Custom ###
 docker-compose.override.yml
+src/main/resources/application-*.properties
+logs/
 pocketo-data/
 private/
 
