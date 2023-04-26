@@ -1,41 +1,22 @@
-# Don't store sensitive data in this file, use .env.* files instead (ignored by Git)
-# Below options are for production environment by default
-# Use docker-compose.override.yml (ignored by Git) to override these options on dev environment
+# Don't store sensitive data in this file
+# Use env vars in docker-compose.override.yml (ignored by Git) instead
 version: '3.9'
 services:
   app-blue:
     image: ${APP_IMAGE:?}
     container_name: pocketo-app-blue
-    restart: unless-stopped
-    volumes:
-      - './pocketo-data/app/logs:/workspace/logs/'
-    env_file:
-      - './pocketo-config/.env.app'
-    environment:
-      - RUN_VIA_DOCKER_COMPOSE=1
     depends_on:
       - db
       - cache
-    pull_policy: never # Don't pull app image in development, and pull it manually in production
+    environment:
+      - RUN_VIA_DOCKER_COMPOSE=1
   app-green:
     extends:
       service: app-blue
     container_name: pocketo-app-green
-    profiles:
-      - production
   db:
     image: 'postgres:15-alpine'
     container_name: pocketo-db
-    restart: unless-stopped
-    volumes:
-      - './pocketo-data/db:/var/lib/postgresql/data/'
-    env_file:
-      - './pocketo-config/.env.db'
   cache:
     image: 'redis:7-alpine'
     container_name: pocketo-cache
-    restart: unless-stopped
-    volumes:
-      - './pocketo-data/cache:/data/'
-    env_file:
-      - './pocketo-config/.env.cache'

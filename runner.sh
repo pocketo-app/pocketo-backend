@@ -11,7 +11,6 @@ IFS=$'\n\t'
 
 export APP_IMAGE=$1 # Let all commands below use this env var
 COMMAND=$2
-ENV_FILE=./pocketo-config/.env # Must use relative path
 BLUE_SERVICE=app-blue
 GREEN_SERVICE=app-green
 WAIT_TIME=30
@@ -19,13 +18,13 @@ WAIT_TIME=30
 if [[ $COMMAND == "start" ]]
 then
 	echo Start all services
-	docker compose --env-file $ENV_FILE up -d
+	docker compose up -d
 	echo Done
 	exit 0
 elif [[ $COMMAND == "stop" ]]
 then
 	echo Stop all services
-	docker compose --env-file $ENV_FILE down
+	docker compose down
 	echo Done
 	exit 0
 elif [[ $COMMAND == "restart" ]]
@@ -36,17 +35,17 @@ then
 	# Can not use restart command, must stop and up again
 	# https://docs.docker.com/engine/reference/commandline/compose_restart/
 	echo Stop the green service
-	docker compose --env-file $ENV_FILE stop $GREEN_SERVICE
+	docker compose stop $GREEN_SERVICE
 	echo Restart the green service
-	docker compose --env-file $ENV_FILE up $GREEN_SERVICE -d
+	docker compose up -d $GREEN_SERVICE
 
 	echo "Wait $WAIT_TIME seconds for the green service starting"
 	sleep $WAIT_TIME
 
 	echo Stop the blue service
-	docker compose --env-file $ENV_FILE stop $BLUE_SERVICE
+	docker compose stop $BLUE_SERVICE
 	echo Restart the blue service
-	docker compose --env-file $ENV_FILE up $BLUE_SERVICE -d
+	docker compose up -d $BLUE_SERVICE
 
 	echo Done
 	exit 0

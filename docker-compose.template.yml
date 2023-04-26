@@ -1,0 +1,77 @@
+# Create docker-compose.override.yml (ignored by Git) based on this file
+# All of below values are for local environment by default
+
+# restart: 'no' (local), unless-stopped (production)
+# Never restart any containers automatically in local, but that is a must in production
+# The value 'no' must be quoted, so it will be evaluated as a string, not a boolean
+
+# pull_policy: never (app containers), missing (other containers)
+# For app containers in local, never pull the image (must use the local build)
+# For app containers in production, pull the image manually (by a command)
+# For other containers in both local and production, only pull the image if missing
+
+# ports:
+# Expose any container ports depending on your needs, for example:
+# - 'X:8080' (to use the app)
+# - 'X:5005' (to debug the app inside the container)
+# - 'X:5432', 'X:6379' (to use the services from outside)
+# Exposing host ports should not be duplicated (the services won't start)
+
+# volumes:
+# Preserve data of containers by mounting data folders to the outside
+# The default values below should be kept in both local and production
+
+# environment:
+# The required env vars for each service are listed below
+# For app services, env vars correspond to Spring Boot properties (written as UPPER_CASE)
+# These env vars are only applied when running the app with Docker Compose (in production)
+# If running the app directly (in local), use application-default.properties (ignored by Git) instead
+
+services:
+  app-blue:
+    restart: 'no'
+    pull_policy: never
+    ports:
+      - '8080:8080'
+      - '5005:5005'
+    volumes:
+      - './pocketo-data/app-blue/logs:/workspace/logs/'
+    environment:
+      - SPRING_DATASOURCE_URL=
+      - SPRING_DATASOURCE_USERNAME=
+      - SPRING_DATASOURCE_PASSWORD=
+      - LOGGING_FILE_PATH=
+      - LOGGING_LEVEL_ROOT=
+  app-green:
+    restart: 'no'
+    pull_policy: never
+    ports:
+      - '8081:8080'
+    volumes:
+      - './pocketo-data/app-green/logs:/workspace/logs/'
+    environment:
+      - SPRING_DATASOURCE_URL=
+      - SPRING_DATASOURCE_USERNAME=
+      - SPRING_DATASOURCE_PASSWORD=
+      - LOGGING_FILE_PATH=
+      - LOGGING_LEVEL_ROOT=
+  db:
+    restart: 'no'
+    pull_policy: missing
+    ports:
+      - '5432:5432'
+    volumes:
+      - './pocketo-data/db:/var/lib/postgresql/data/'
+    environment:
+      - POSTGRES_DB=
+      - POSTGRES_USER=
+      - POSTGRES_PASSWORD=
+  cache:
+    restart: 'no'
+    pull_policy: missing
+    ports:
+      - '6379:6379'
+    volumes:
+      - './pocketo-data/cache:/data/'
+    environment:
+      - REDIS_ARGS=
